@@ -1,0 +1,27 @@
+﻿html, 
+body {
+    height: 100%;
+}
+
+.container-fluid,
+.row,
+.col-md-10 {
+    height: 100%;
+}
+
+#map {
+    height: 100%;
+    width: 100%;
+}
+
+.selected-location:after {
+    content: ' SHOWN';
+    font-size: 9px;
+    color: cornflowerblue;
+
+}
+
+.row {
+    margin-left: -5px;
+    margin-right: -5px;
+}

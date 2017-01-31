@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Neighborhood Map Project</title>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Knockout -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.1/knockout-min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css" />
+    
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="row">
+                    <h1>Welcome to Deerfield, IL</h1>
+                    <h3>Below are a listing of houses in the area. Select a house for a closer view.</h3>
+                </div>
+                <div class="row">
+                    <ul data-bind="foreach: locationsList">
+                        <li data-bind="click: $parent.setCurrentLocation, css: { 'selected-location': active }, text: title"></li>
+                    </ul>
+                </div>
+                <div class="row">
+                    <input type="button" data-bind="click: showAllMarkers" value="Show all locations" class="btn btn-primary" />
+                    <input type="button" data-bind="click: hideAllMarkers" value="Hide all locations" class="btn btn-primary" />
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div id="map"></div>   
+            </div>
+        </div>
+    </div>
+    
+    
+    <script>
+        var map;
+        var markers = [];
+
+        function initMap() {
+
+            // create a new map
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 42.167308, lng: -87.845736 },
+                zoom: 13,
+                mapTypeControl: false
+            });
+
+            // build the initial marker array
+            initializeMarkers();
+        }
+
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAonp8XE2ZoDuCEumkEjj5Oi9phzUVqdoc&v=3&callback=initMap">
+    </script>
+    <script src="views/app.js"></script>
+</body>
+</html>
