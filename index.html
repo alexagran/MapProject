@@ -16,14 +16,17 @@
         <div class="row">
             <div class="col-md-2">
                 <div class="row">
-                    <h1>Welcome to Deerfield, IL</h1>
-                    <h3>Below are a listing of houses in the area. Select a house for a closer view.</h3>
+                    <h1>The North Shore's Top Restaurants</h1>
+                    <h3>Get started by selecting a suburb</h3>
                 </div>
                 <div class="row">
+                    <select data-bind="options: suburbsList, optionsText: 'city', value: selectedSuburb"></select>
+                </div>
+               <!--<div class="row">
                     <ul data-bind="foreach: locationsList">
                         <li data-bind="click: $parent.setCurrentLocation, css: { 'selected-location': active }, text: title"></li>
                     </ul>
-                </div>
+                </div>-->
                 <div class="row">
                     <input type="button" data-bind="click: showAllMarkers" value="Show all locations" class="btn btn-primary" />
                     <input type="button" data-bind="click: hideAllMarkers" value="Hide all locations" class="btn btn-primary" />
@@ -34,13 +37,19 @@
             </div>
         </div>
     </div>
-    
-    
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="views/app.js"></script>
     <script>
         var map;
         var markers = [];
 
         function initMap() {
+
+            // get coordinates for selected suburb and defatul map
+            // to those
+
 
             // create a new map
             map = new google.maps.Map(document.getElementById('map'), {
@@ -49,13 +58,12 @@
                 mapTypeControl: false
             });
 
-            // build the initial marker array
-            initializeMarkers();
+
         }
 
     </script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAonp8XE2ZoDuCEumkEjj5Oi9phzUVqdoc&v=3&callback=initMap">
     </script>
-    <script src="views/app.js"></script>
+    
 </body>
 </html>
