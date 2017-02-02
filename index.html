@@ -22,11 +22,12 @@
                 <div class="row">
                     <select data-bind="options: suburbsList, optionsText: 'city', value: selectedSuburb"></select>
                 </div>
-              <!-- <div class="row">
-                    <ul data-bind="foreach: restaurantsList">
-                        <li data-bind="click: $parent.selectedRestaurant, css: { 'selected-location': active }, text: title"></li>
+              <div class="row">
+                    <ul data-bind="foreach: venuesList">
+                        <li data-bind="text: name"></li>
+                        <!--click: $parent.selectedRestaurant, css: { 'selected-location': active }, -->
                     </ul>
-                </div>-->
+                </div>
                 <!--<div class="row">
                     <input type="button" data-bind="click: showAllMarkers" value="Show all locations" class="btn btn-primary" />
                     <input type="button" data-bind="click: hideAllMarkers" value="Hide all locations" class="btn btn-primary" />
