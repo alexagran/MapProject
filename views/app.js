@@ -61,6 +61,16 @@ var ViewModel = function () {
         // load the restaurants
         loadRestaurants(self.currentSuburb());
 
+
+    });
+
+    self.currentRestaurant = ko.observable();
+    self.selectedRestaurant = ko.observable();
+    self.selectedRestaurant.subscribe(function (restaurant) {
+
+        self.currentRestaurant(restaurant);
+
+
     });
 
    // self.setCurrentSuburb = function (clickedSuburb) {
@@ -89,8 +99,6 @@ function loadRestaurants(suburb) {
         console.log('url: ' + url);
 
     $.getJSON(url, function (data) {
-        console.log("success");
-        console.log("data: " + data);
         console.log("venues: " + data.response.venues);
 
         // clear out any markers
@@ -112,13 +120,14 @@ function loadRestaurants(suburb) {
 function initializeMarkers(data) {
 
     // isolate the restaurants
-    var restaurants = data.response.venues;
+    var venues = data.response.venues;
 
-    for (var i = 0; i < restaurants.length; i++) {
+    for (var i = 0; i < venues.length; i++) {
 
-        var position = { lat: restaurants[i].location.lat, lng: restaurants[i].location.lng };
-        var restaurantID = restaurants[i].id;
-        var name = restaurants[i].name;
+        var position = { lat: venues[i].location.lat, lng: venues[i].location.lng };
+        var venuesID = venues[i].id;
+        var name = venues[i].name;
+        var checkins = venues[i].stats.checkinsCount;
 
         // add the marker
         var marker = new google.maps.Marker({
@@ -126,12 +135,31 @@ function initializeMarkers(data) {
             map: map,
             animation: google.maps.Animation.DROP,
             title: name,
-            id: restaurantID
+            id: venuesID,
+            checkins: checkins
+        });
+
+        var venueInfoWindow = new google.maps.InfoWindow();
+        marker.addListener('click', function () {
+            fillInfoWindow(this, venueInfoWindow);
         });
 
         markers.push(marker);
     }
     
+}
+
+function fillInfoWindow(marker, infoWindow) {
+
+    if (infoWindow.marker != marker) {
+        infoWindow.marker = marker;
+        infoWindow.setContent('<div>' + marker.title + '</div>' +
+            '<div>Total checkins: ' + marker.checkins + '</div');
+        infoWindow.open(map, marker);
+        infoWindow.addListener('closeclick', function () {
+            infoWindow.setMarker(null);
+        });
+    }
 }
 
 //function showAllMarkers() {

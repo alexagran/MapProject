@@ -22,11 +22,11 @@
                 <div class="row">
                     <select data-bind="options: suburbsList, optionsText: 'city', value: selectedSuburb"></select>
                 </div>
-               <div class="row">
+              <!-- <div class="row">
                     <ul data-bind="foreach: restaurantsList">
-                        <li data-bind="click: $parent.setCurrentRestaurant, css: { 'selected-location': active }, text: title"></li>
+                        <li data-bind="click: $parent.selectedRestaurant, css: { 'selected-location': active }, text: title"></li>
                     </ul>
-                </div>
+                </div>-->
                 <!--<div class="row">
                     <input type="button" data-bind="click: showAllMarkers" value="Show all locations" class="btn btn-primary" />
                     <input type="button" data-bind="click: hideAllMarkers" value="Hide all locations" class="btn btn-primary" />
@@ -54,7 +54,7 @@
             // create a new map
             map = new google.maps.Map(document.getElementById('map'), {
                 center: { lat: 42.167308, lng: -87.845736 },
-                zoom: 10,
+                zoom: 12,
                 mapTypeControl: false
             });
 
