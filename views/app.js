@@ -86,22 +86,47 @@ function loadRestaurants(suburb) {
     var url = 'https://api.foursquare.com/v2/venues/search?v=20170131&client_id=OZ5CHQMLCUODJNEG1DJW5EHBXBNGFVSE2BBQLIHK45HNY34M&client_secret=1UJX0D5JGLNQHUZPC05CW5L5X5ZP3B5CHITJ3AAB1SZMHTWI&limit=5&categoryId=4bf58dd8d48988d142941735&radius=5000&near=' +
         suburb.city() + ',' + suburb.state()
 
-    console.log('url: ' + url);
+        console.log('url: ' + url);
 
     $.getJSON(url, function (data) {
-        console.log(data);
+        console.log("success");
+        console.log("data: " + data);
+        console.log("venues: " + data.response.venues);
+
+        // clear out any markers
+        deleteMarkers();
+
+        // reset the map center
+        map.setOptions({ center: data.response.geocode.feature.geometry.center, zoom: 12 });
+
+        // add restaurants as markers
+        initializeMarkers(data);
+
     })
+      .fail(function (data, textStatus, error) {
+          var err = textStatus + ", " + error;
+          console.log("Request Failed: " + err);
+      });
 }
 
-function initializeMarkers() {
+function initializeMarkers(data) {
 
-    for (var i = 0; i < viewModel.locationsList().length; i++) {
+    // isolate the restaurants
+    var restaurants = data.response.venues;
+
+    for (var i = 0; i < restaurants.length; i++) {
+
+        var position = { lat: restaurants[i].location.lat, lng: restaurants[i].location.lng };
+        var restaurantID = restaurants[i].id;
+        var name = restaurants[i].name;
+
+        // add the marker
         var marker = new google.maps.Marker({
-            position: viewModel.locationsList()[i].position(),
+            position: position,
             map: map,
             animation: google.maps.Animation.DROP,
-            title: viewModel.locationsList()[i].title(),
-            id: viewModel.locationsList()[i].id()
+            title: name,
+            id: restaurantID
         });
 
         markers.push(marker);
@@ -109,44 +134,51 @@ function initializeMarkers() {
     
 }
 
-function showAllMarkers() {
+//function showAllMarkers() {
+//    for (var i = 0; i < markers.length; i++) {
+//        showMarker(markers[i].id);
+//    }
+//}
+
+//function showMarker(id) {
+//    for (var i = 0; i < markers.length; i++) {
+//        if (markers[i].id == id) {
+//            markers[i].setAnimation(google.maps.Animation.DROP);
+//            markers[i].setMap(map);
+
+//            // need to set the location to active as well
+//            viewModel.locationsList()[i].active(true);
+
+//            break;
+//        }
+//    }
+//}
+
+//function hideAllMarkers() {
+//    for (var i = 0; i < markers.length; i++) {
+//        hideMarker(markers[i].id);
+//    }
+//}
+
+//function hideMarker(id) {
+//    for (var i = 0; i < markers.length; i++) {
+//        if (markers[i].id == id) {
+//            markers[i].setAnimation(null);
+//            markers[i].setMap(null);
+
+//            // need to set the location to inactive as well
+//            viewModel.locationsList()[i].active(false);
+
+//            break;
+//        }
+//    }
+//}
+
+function deleteMarkers() {
     for (var i = 0; i < markers.length; i++) {
-        showMarker(markers[i].id);
+        markers[i].setMap(null);
     }
-}
-
-function showMarker(id) {
-    for (var i = 0; i < markers.length; i++) {
-        if (markers[i].id == id) {
-            markers[i].setAnimation(google.maps.Animation.DROP);
-            markers[i].setMap(map);
-
-            // need to set the location to active as well
-            viewModel.locationsList()[i].active(true);
-
-            break;
-        }
-    }
-}
-
-function hideAllMarkers() {
-    for (var i = 0; i < markers.length; i++) {
-        hideMarker(markers[i].id);
-    }
-}
-
-function hideMarker(id) {
-    for (var i = 0; i < markers.length; i++) {
-        if (markers[i].id == id) {
-            markers[i].setAnimation(null);
-            markers[i].setMap(null);
-
-            // need to set the location to inactive as well
-            viewModel.locationsList()[i].active(false);
-
-            break;
-        }
-    }
+    markers = [];
 }
 
 function retrieveFoursquareVenue(address) {
