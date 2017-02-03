@@ -1,21 +1,11 @@
 ﻿
-var venues = []
-
-var suburbs = [
+    var suburbs = [
     { city: 'Deerfield', state: 'IL', position: {lat: 42.171137, lng: -87.844512 }},
     { city: 'Northbrook', state: 'IL', position: {lat: 42.127527, lng: -87.828955 }},
     { city: 'Winnetka', state: 'IL', position: {lat: 42.108083, lng: -87.735895 }},
     { city: 'Highwood', state: 'IL', position: {lat: 42.199747, lng: -87.809233 }},
     { city: 'Glenview', state: 'IL', position: {lat: 42.069751, lng: -87.787841 }}
 ];
-
-//var locations = [
-//    { id: 1, title: 'Downtown Deerfield', active: true, position: { lat: 42.167308, lng: -87.845736 } },
-//    { id: 2, title: 'Agran house', active: true, position: { lat: 42.161208, lng: -87.829428 } },
-//    { id: 3, title: 'Groner\s House', active: true, position: { lat: 42.175045, lng: -87.856293 } },
-//    { id: 4, title: 'Meliker\s House', active: true, position: { lat: 42.157176, lng: -87.829599 } },
-//    { id: 5, title: 'Batt\s House', active: true, position: { lat: 42.196891, lng: -87.871571 } }
-//];
 
 var Suburb = function (data) {
     this.city = ko.observable(data.city);
@@ -63,7 +53,7 @@ var ViewModel = function () {
         // set up a callback in order to have access to the data
         getVenueData(suburb, function (data) {
 
-            var venues = data.response.venues;
+            venues = data.response.venues;
 
             // clear the venues
             self.venuesList([]);
@@ -131,7 +121,7 @@ function getVenueData(suburb, callback) {
     })
       .fail(function (data, textStatus, error) {
           var err = textStatus + ", " + error;
-          console.log("Request Failed: " + err);
+          alert('An attempt to contact the Foursquare API has failed. Please try again');
       });
 
 }

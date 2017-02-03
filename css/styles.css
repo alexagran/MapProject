@@ -33,6 +33,7 @@ li {
     margin-bottom: 10px;
 }
 
+/* h1 is too large between these viewport widths*/
 @media (min-width: 992px) and (max-width: 1200px) {
     h1 {
         font-size: 30px;
