@@ -24,8 +24,7 @@
                 </div>
               <div class="row">
                     <ul data-bind="foreach: venuesList">
-                        <li data-bind="text: name"></li>
-                        <!--click: $parent.selectedRestaurant, css: { 'selected-location': active }, -->
+                        <li data-bind="text: name, click: $parent.selectedVenue, css: { 'selected-location': active }"></li>
                     </ul>
                 </div>
                 <!--<div class="row">
@@ -41,16 +40,12 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"
             integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
             crossorigin="anonymous"></script>
-   
+        
     <script>
         var map;
         var markers = [];
 
         function initMap() {
-
-            // get coordinates for selected suburb and defatul map
-            // to those
-
 
             // create a new map
             map = new google.maps.Map(document.getElementById('map'), {
@@ -58,6 +53,8 @@
                 zoom: 12,
                 mapTypeControl: false
             });
+
+            google.maps.event.addDomListener(window, 'resize', resetMap)
 
 
         }

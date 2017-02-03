@@ -2,11 +2,11 @@
 var venues = []
 
 var suburbs = [
-    { city: 'Deerfield', state: 'IL' },
-    { city: 'Northbrook', state: 'IL' },
-    { city: 'Winnetka', state: 'IL' },
-    { city: 'Highwood', state: 'IL' },
-    { city: 'Glenview', state: 'IL' }
+    { city: 'Deerfield', state: 'IL', position: {lat: 42.171137, lng: -87.844512 }},
+    { city: 'Northbrook', state: 'IL', position: {lat: 42.127527, lng: -87.828955 }},
+    { city: 'Winnetka', state: 'IL', position: {lat: 42.108083, lng: -87.735895 }},
+    { city: 'Highwood', state: 'IL', position: {lat: 42.199747, lng: -87.809233 }},
+    { city: 'Glenview', state: 'IL', position: {lat: 42.069751, lng: -87.787841 }}
 ];
 
 //var locations = [
@@ -20,6 +20,7 @@ var suburbs = [
 var Suburb = function (data) {
     this.city = ko.observable(data.city);
     this.state = ko.observable(data.state);
+    this.position = ko.observable(data.position);
 };
 
 var Venue = function (data) {
@@ -88,31 +89,34 @@ var ViewModel = function () {
     self.selectedVenue = ko.observable();
     self.selectedVenue.subscribe(function (venue) {
 
-        // switch the marker
-
-        self.currentVenue(venue);
-
+        // make active if inactive and vice versa
+        if (venue.active()) {
+            self.selectedVenue().active(false);
+            hideMarker(venue);
+        }
+        else {
+            self.selectedVenue().active(true);
+            showMarker(venue);
+        }
 
     });
+}
 
-   // self.setCurrentSuburb = function (clickedSuburb) {
-        //// switch whether the marker displays based on its
-        //// active state
-        //if (self.currentLocation().active()) {
-        //    self.currentLocation().active(false);
-        //    hideMarker(self.currentLocation().id());
+function resetMap() {
 
-        //} else {
-        //    self.currentLocation().active(true);
-        //    showMarker(self.currentLocation().id());
-        //}
-    //};
+    var bounds = new google.maps.LatLngBounds();
+    for (var i = 0; i < markers.length; i++) {
+        bounds.extend(markers[i].position);
+    }
+    map.fitBounds(bounds);
+    
+
 }
 
 function getVenueData(suburb, callback) {
 
     // set the URL for the Foursquare API search
-    var url = 'https://api.foursquare.com/v2/venues/search?v=20170131&client_id=OZ5CHQMLCUODJNEG1DJW5EHBXBNGFVSE2BBQLIHK45HNY34M&client_secret=1UJX0D5JGLNQHUZPC05CW5L5X5ZP3B5CHITJ3AAB1SZMHTWI&limit=5&categoryId=4bf58dd8d48988d142941735&radius=2500&near=' +
+    var url = 'https://api.foursquare.com/v2/venues/search?v=20170131&client_id=OZ5CHQMLCUODJNEG1DJW5EHBXBNGFVSE2BBQLIHK45HNY34M&client_secret=1UJX0D5JGLNQHUZPC05CW5L5X5ZP3B5CHITJ3AAB1SZMHTWI&limit=5&categoryId=4bf58dd8d48988d142941735&radius=2000&near=' +
         suburb.city() + ',' + suburb.state()
 
     //console.log('url: ' + url);
@@ -132,6 +136,8 @@ function getVenueData(suburb, callback) {
 function initializeMarkers(venues) {
 
     // iterate the venues adding a marker for each  
+    var bounds = new google.maps.LatLngBounds();
+
     for (var i = 0; i < venues.length; i++) {
 
         var position = { lat: venues[i].location.lat, lng: venues[i].location.lng };
@@ -149,6 +155,8 @@ function initializeMarkers(venues) {
             checkins: checkins // custom field
         });
 
+        bounds.extend(marker.position);
+
         var venueInfoWindow = new google.maps.InfoWindow();
         marker.addListener('click', function () {
             fillInfoWindow(this, venueInfoWindow);
@@ -156,7 +164,12 @@ function initializeMarkers(venues) {
         });
 
         markers.push(marker);
+
+        
+
     }
+    map.fitBounds(bounds);
+
     
 }
 
@@ -183,45 +196,24 @@ function toggleBounce(marker) {
     }
 }
 
-//function showAllMarkers() {
-//    for (var i = 0; i < markers.length; i++) {
-//        showMarker(markers[i].id);
-//    }
-//}
-
-//function showMarker(id) {
-//    for (var i = 0; i < markers.length; i++) {
-//        if (markers[i].id == id) {
-//            markers[i].setAnimation(google.maps.Animation.DROP);
-//            markers[i].setMap(map);
-
-//            // need to set the location to active as well
-//            viewModel.locationsList()[i].active(true);
-
-//            break;
-//        }
-//    }
-//}
-
-//function hideAllMarkers() {
-//    for (var i = 0; i < markers.length; i++) {
-//        hideMarker(markers[i].id);
-//    }
-//}
-
-//function hideMarker(id) {
-//    for (var i = 0; i < markers.length; i++) {
-//        if (markers[i].id == id) {
-//            markers[i].setAnimation(null);
-//            markers[i].setMap(null);
-
-//            // need to set the location to inactive as well
-//            viewModel.locationsList()[i].active(false);
-
-//            break;
-//        }
-//    }
-//}
+function showMarker(venue) {
+    for (var i = 0; i < markers.length; i++) {
+        if (markers[i].id == venue.id()) {
+            markers[i].setAnimation(google.maps.Animation.DROP);
+            markers[i].setMap(map);
+            break;
+        }
+    }
+}
+function hideMarker(venue) {
+    for (var i = 0; i < markers.length; i++) {
+        if (markers[i].id == venue.id()) {
+            markers[i].setAnimation(null);
+            markers[i].setMap(null);
+            break;
+        }
+    }
+}
 
 function deleteMarkers() {
     for (var i = 0; i < markers.length; i++) {
