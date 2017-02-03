@@ -85,6 +85,8 @@ var ViewModel = function () {
 
     });
 
+
+    // react to the user clicking on the list view items
     self.currentVenue = ko.observable();
     self.selectedVenue = ko.observable();
     self.selectedVenue.subscribe(function (venue) {
@@ -102,6 +104,8 @@ var ViewModel = function () {
     });
 }
 
+// Resize the map within the bounds of the markers when 
+// the window is resized
 function resetMap() {
 
     var bounds = new google.maps.LatLngBounds();
@@ -109,8 +113,7 @@ function resetMap() {
         bounds.extend(markers[i].position);
     }
     map.fitBounds(bounds);
-    
-
+   
 }
 
 function getVenueData(suburb, callback) {

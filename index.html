@@ -15,22 +15,19 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-2">
-                <div class="row">
-                    <h1>The North Shore's Top Restaurants</h1>
+                <div class="row row-buffer">
+                    <h1>The North Shore's Most Popular Asian Restaurants</h1>
+                    <h5>As determined by Foursquare checkins</h5>
                     <h3>Get started by selecting a suburb</h3>
                 </div>
-                <div class="row">
+                <div class="row row-buffer">
                     <select data-bind="options: suburbsList, optionsText: 'city', value: selectedSuburb"></select>
                 </div>
-              <div class="row">
+              <div class="row row-buffer">
                     <ul data-bind="foreach: venuesList">
                         <li data-bind="text: name, click: $parent.selectedVenue, css: { 'selected-location': active }"></li>
                     </ul>
                 </div>
-                <!--<div class="row">
-                    <input type="button" data-bind="click: showAllMarkers" value="Show all locations" class="btn btn-primary" />
-                    <input type="button" data-bind="click: hideAllMarkers" value="Hide all locations" class="btn btn-primary" />
-                </div>-->
             </div>
             <div class="col-md-10">
                 <div id="map"></div>   
