@@ -56,8 +56,12 @@
 
         }
 
+        function googleError() {
+            alert('Google API is having difficulty loading')
+        }
+
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAonp8XE2ZoDuCEumkEjj5Oi9phzUVqdoc&v=3&callback=initMap">
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAonp8XE2ZoDuCEumkEjj5Oi9phzUVqdoc&v=3&callback=initMap onerror=googleError()">
     </script>
      <script src="views/app.js"></script>
    
