@@ -93,7 +93,6 @@ var ViewModel = function () {
                     self.venuesList.push(new Venue(venue));
                 });
 
-
                 suburb.hasLoadedData(true);
 
                 // create the filtered list for this suburb
@@ -102,7 +101,6 @@ var ViewModel = function () {
                     if (venueItem.suburbId === suburb.id) {
                         venueItem.showMarker();
                         self.filteredVenues.push(new Venue(venueItem));
-
                     }
                 });
 
@@ -111,9 +109,7 @@ var ViewModel = function () {
             })
         }
 
-        
         map.setOptions({ center: suburbCenter, zoom: 14 });
-
 
         // show the marker for the suburb and create the filtered list
         self.filteredVenues([]);
@@ -136,10 +132,13 @@ var ViewModel = function () {
         if (venue.active()) {
             self.selectedVenue().active(false);
             venue.hideMarker(venue);
+            venue.marker.info.close();
         }
         else {
             self.selectedVenue().active(true);
             venue.showMarker(venue);
+            venue.marker.info.open(map, venue.marker);           
+
         }
 
     });
@@ -194,31 +193,25 @@ function createMarker(venue) {
 
     bounds.extend(marker.position);
 
-    var venueInfoWindow = new google.maps.InfoWindow();
-    marker.addListener('click', function () {
-        fillInfoWindow(this, venueInfoWindow);
-        toggleBounce(this);
+    marker.info = new google.maps.InfoWindow({
+        content: '<div>' + marker.title + '</div>' +
+            '<div>Total checkins: ' + marker.checkinsCount + '</div'
     });
-       
+
+    google.maps.event.addListener(marker, 'click', function () {
+        marker.info.open(map, marker);
+        toggleBounce(marker);
+    })
+
+    google.maps.event.addListener(marker.info, 'closeclick', function () {
+        marker.info.close();
+        marker.setAnimation(null);
+    })
+
     map.fitBounds(bounds);
 
     return marker;
 }
-
-function fillInfoWindow(marker, infoWindow) {
-
-    if (infoWindow.marker != marker) {
-        infoWindow.marker = marker;
-        infoWindow.setContent('<div>' + marker.title + '</div>' +
-            '<div>Total checkins: ' + marker.checkinsCount + '</div');
-        infoWindow.open(map, marker);
-        infoWindow.addListener('closeclick', function () {
-            infoWindow.close();
-            marker.setAnimation(null);
-        });
-    }
-}
-
 function toggleBounce(marker) {
     if (marker.getAnimation() !== null) {
         marker.setAnimation(null);
@@ -227,27 +220,6 @@ function toggleBounce(marker) {
         marker.setAnimation(google.maps.Animation.BOUNCE);
     }
 }
-
-//function showMarker(venue) {
-//    for (var i = 0; i < markers.length; i++) {
-//        if (markers[i].id == venue.id()) {
-//            markers[i].setAnimation(google.maps.Animation.DROP);
-//            markers[i].setMap(map);
-//            break;
-//        }
-//    }
-//}
-
-//function hideMarker(venue) {
-//    for (var i = 0; i < markers.length; i++) {
-//        if (markers[i].id == venue.id()) {
-//            markers[i].setAnimation(null);
-//            markers[i].setMap(null);
-//            break;
-//        }
-//    }
-//}
-
 
 // remove all the markers from the map
 function removeMarkers() {
